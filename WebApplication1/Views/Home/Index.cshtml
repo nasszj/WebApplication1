@@ -2,10 +2,37 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Bediening voor het Verkeerslicht.</p>
 </div>
+
+<!-- Geluid status balken -->
+<div class="status-bars">
+    <div class="status-bar green-bar">
+        <h3>🟢 Groen - Veilig</h3>
+        <p>Het is stil in de klas. Iedereen werkt rustig.</p>
+        <small>0-70 dB (0-60%)</small>
+    </div>
+
+    <div class="status-bar orange-bar">
+        <h3>🟠 Oranje - Oppassen</h3>
+        <p>Er is wat meer geluid dan gewenst. Dit is een waarschuwing om zachter te zijn.</p>
+        <small>70-85 dB (60-70%)</small>
+    </div>
+
+    <div class="status-bar red-bar">
+        <h3>🔴 Rood - Te Hard</h3>
+        <p>Te veel geluid! Leerlingen luisteren niet goed en moeten direct stil zijn.</p>
+        <small>85-120 dB (70-100%)</small>
+    </div>
+</div>
+
 
 <!-- Horizontaal Verkeerslicht -->
 <div class="traffic-light">
@@ -21,12 +48,50 @@
 <p id="soundPercentage" class="text-center">Geluid: 0%</p>
 
 <style>
+    /* Status balken */
+    .status-bars {
+        display: flex;
+        justify-content: space-around;
+        margin: 30px auto;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .status-bar {
+        flex: 1  250px;
+        padding: 8px;
+        border-radius: 15px;
+        border: 5px solid transparent;
+        background-color: rgba(0,0,0,0,0.5);
+        transition: transform 0.2s;
+    }
+
+    .status-bar h3 {
+        margin-top: 0;
+    }
+
+    .green-bar {
+        border-color: rgba(0, 128, 0, 0.5);
+    }
+
+    .orange-bar {
+        border-color: rgba(255, 165, 0, 0.5);
+    }
+
+    .red-bar {
+        border-color: rgba(255, 0, 0, 0.5);
+    }
+
+    .status-bar:hover {
+        transform: scale(1.03);
+    }
+
     /* Verkeerslicht horizontaal */
     .traffic-light {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 30px; /* meer ruimte tussen lampjes */
+        gap: 30px;
         margin: 30px auto;
         background-color: #333;
         padding: 30px;
@@ -35,7 +100,7 @@
     }
 
     .light {
-        width: 160px; /* grotere lampjes */
+        width: 160px;
         height: 160px;
         border-radius: 50%;
         background-color: #555;
@@ -57,8 +122,8 @@
 
     /* Geluidsmeter balk */
     .sound-meter-container {
-        width: 60%; /* breedte balk */
-        height: 50px; /* dikkere balk */
+        width: 60%;
+        height: 50px;
         background-color: #ddd;
         margin: 30px auto;
         border-radius: 25px;
@@ -80,32 +145,24 @@
 
 <script>
     function changeLight(color) {
-        // Zet alle lampjes uit
         document.querySelectorAll('.light').forEach(light => light.classList.remove('active'));
-
-        // Zet het geselecteerde lampje aan
         document.getElementById(color).classList.add('active');
-
-        // Stuur naar server (later kan dit naar Arduino endpoint)
-        fetch(`/api/trafficlight?color=${color}`, {
-            method: 'POST'
-        })
-        .then(response => {
-            console.log(`Verkeerslicht naar ${color} gestuurd`);
-        })
-        .catch(err => console.error(err));
+        fetch(`/api/trafficlight?color=${color}`, { method: 'POST' })
+            .then(response => console.log(`Verkeerslicht naar ${color} gestuurd`))
+            .catch(err => console.error(err));
     }
 
-    // Functie om geluidsniveau bij te werken
     function updateSoundMeter(levelPercent) {
         levelPercent = Math.max(0, Math.min(levelPercent, 100));
         document.getElementById('soundMeter').style.width = levelPercent + '%';
         document.getElementById('soundPercentage').innerText = `Geluid: ${levelPercent}%`;
     }
 
-    // Simuleer geluid voor demo
     setInterval(() => {
-        const simulatedLevel = Math.floor(Math.random() * 101); // 0-100%
+        const simulatedLevel = Math.floor(Math.random() * 101);
         updateSoundMeter(simulatedLevel);
     }, 1000);
 </script>
+
+
+
