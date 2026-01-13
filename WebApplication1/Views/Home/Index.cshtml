@@ -4,13 +4,108 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Bediening voor het Verkeerslicht.</p>
 </div>
 
-<div class="mt-4">
-    <a asp-controller="Statistieken"
-       asp-action="Index"
-       class="btn btn-primary">
-        Ga naar Statistieken
-    </a>
+<!-- Horizontaal Verkeerslicht -->
+<div class="traffic-light">
+    <div id="red" class="light red" onclick="changeLight('red')"></div>
+    <div id="orange" class="light orange" onclick="changeLight('orange')"></div>
+    <div id="green" class="light green" onclick="changeLight('green')"></div>
 </div>
+
+<!-- Geluidsniveau balk -->
+<div class="sound-meter-container">
+    <div class="sound-meter" id="soundMeter"></div>
+</div>
+<p id="soundPercentage" class="text-center">Geluid: 0%</p>
+
+<style>
+    /* Verkeerslicht horizontaal */
+    .traffic-light {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px; /* meer ruimte tussen lampjes */
+        margin: 30px auto;
+        background-color: #333;
+        padding: 30px;
+        border-radius: 20px;
+        width: fit-content;
+    }
+
+    .light {
+        width: 160px; /* grotere lampjes */
+        height: 160px;
+        border-radius: 50%;
+        background-color: #555;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .light.red.active {
+            background-color: red;
+        }
+
+        .light.orange.active {
+            background-color: orange;
+        }
+
+        .light.green.active {
+            background-color: green;
+        }
+
+    /* Geluidsmeter balk */
+    .sound-meter-container {
+        width: 60%; /* breedte balk */
+        height: 50px; /* dikkere balk */
+        background-color: #ddd;
+        margin: 30px auto;
+        border-radius: 25px;
+        overflow: hidden;
+    }
+
+    .sound-meter {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(to right, green, yellow, red);
+        border-radius: 25px 0 0 25px;
+        transition: width 0.3s;
+    }
+
+    #soundPercentage {
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    function changeLight(color) {
+        // Zet alle lampjes uit
+        document.querySelectorAll('.light').forEach(light => light.classList.remove('active'));
+
+        // Zet het geselecteerde lampje aan
+        document.getElementById(color).classList.add('active');
+
+        // Stuur naar server (later kan dit naar Arduino endpoint)
+        fetch(`/api/trafficlight?color=${color}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            console.log(`Verkeerslicht naar ${color} gestuurd`);
+        })
+        .catch(err => console.error(err));
+    }
+
+    // Functie om geluidsniveau bij te werken
+    function updateSoundMeter(levelPercent) {
+        levelPercent = Math.max(0, Math.min(levelPercent, 100));
+        document.getElementById('soundMeter').style.width = levelPercent + '%';
+        document.getElementById('soundPercentage').innerText = `Geluid: ${levelPercent}%`;
+    }
+
+    // Simuleer geluid voor demo
+    setInterval(() => {
+        const simulatedLevel = Math.floor(Math.random() * 101); // 0-100%
+        updateSoundMeter(simulatedLevel);
+    }, 1000);
+</script>
