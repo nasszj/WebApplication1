@@ -1,3 +1,5 @@
+using Microsoft.Data.SqlClient;
+using WebApplication1.Data;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
