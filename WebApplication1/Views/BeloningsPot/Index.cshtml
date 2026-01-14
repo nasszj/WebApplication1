@@ -1,14 +1,16 @@
-﻿@{
+﻿@model WebApplication1.Models.BeloningsPot
+
+@{
     ViewData["Title"] = "BeloningsPot";
 }
 
 <div class="text-center">
     <h1>BeloningsPot</h1>
-    <p>Overzicht van de huidige beloningspot.</p>
-
-    <ul>
-        <li>Totaal bedrag in de pot: € 1.250</li>
-        <li>Aantal deelnemers: 18</li>
-        <li>Laatste update: @DateTime.Now</li>
-    </ul>
+    <p>Overzicht van de huidige beloningsspot.</p>
 </div>
+
+<ul>
+    <li>Totaal bedrag in de pot: € @Model.HuidigePunten</li>
+    <li>Aantal deelnemers: @Model.DoelPunten</li>
+    <li>Laatste update: @DateTime.Now</li>
+</ul>

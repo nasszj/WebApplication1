@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.Data.SqlClient;
+using WebApplication1.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers
 {
