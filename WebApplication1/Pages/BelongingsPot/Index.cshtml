@@ -1,0 +1,85 @@
+﻿@page
+@model WebApplication1.Pages.BelongingsPot.IndexModel
+@{
+    ViewData["Title"] = "Beloningssysteem";
+}
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="card">
+    <div class="header">
+        <div>
+            <h1>🏆 Beloningssysteem</h1>
+            <p>Stel doelen in en beloon leerlingen voor goed gedrag</p>
+        </div>
+        <button class="btn-primary" onclick="toonFormulier()">+ Nieuw Doel</button>
+    </div>
+
+    @if (Model.Doelen.Count == 0)
+    {
+        <div class="empty">
+            <p>Nog geen doelen ingesteld.</p>
+            <small>Klik op "Nieuw Doel" om te beginnen.</small>
+        </div>
+    }
+    else
+    {
+        <div class="doelen-lijst">
+            @for (int i = 0; i < Model.Doelen.Count; i++)
+            {
+                var doel = Model.Doelen[i];
+                <div class="doel-kaart">
+                    <h3>@doel.Titel</h3>
+                    <p>@doel.Beschrijving</p>
+                    <p><strong>@doel.Minuten</strong> minuten op groen</p>
+                    <span class="beloning">🎁 @doel.Beloning</span>
+
+                    <!-- Verwijder knop als prullenbak -->
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="index" value="@i" />
+                        <button type="submit" formaction="/BelongingsPot?handler=Verwijder" class="btn-trash" title="Verwijderen">
+                            <!-- SVG prullenbak -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#f87171" viewBox="0 0 24 24">
+                                <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12h-11L5 9zm4 2v8h2v-8H9zm4 0v8h2v-8h-2z" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+
+
+    }
+</div>
+
+<div id="doelForm" class="form-card hidden">
+    <h2>Nieuw Doel Toevoegen</h2>1
+
+    <form method="post">
+        <label>Titel *</label>
+        <input asp-for="Titel" placeholder="Bijv. 10 minuten rustig werken" required />
+
+        <label>Beschrijving</label>
+<textarea asp-for="Beschrijving" placeholder="Optionele extra uitleg..."></textarea>
+
+        <label>Tijd op groen (minuten) *</label>
+        <input asp-for="Minuten" type="number" />
+
+        <label>Beloning *</label>
+        <input asp-for="Beloning" placeholder="Bijv. 5 minuten extra pauze" required />
+
+        <div class="buttons">
+            <button type="submit" class="btn-success">Toevoegen</button>
+            <button type="button" class="btn-secondary" onclick="verbergFormulier()">Annuleren</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toonFormulier() {
+        document.getElementById("doelForm").classList.remove("hidden");
+    }
+
+    function verbergFormulier() {
+        document.getElementById("doelForm").classList.add("hidden");
+    }
+</script>
